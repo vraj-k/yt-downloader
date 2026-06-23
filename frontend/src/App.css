@@ -1,0 +1,79 @@
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  font-family: system-ui, sans-serif;
+  text-align: center;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.url-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.url-form input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.url-form button,
+.actions button {
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background: #1f1f1f;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.url-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #c0392b;
+  margin-top: 1rem;
+}
+
+.result {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.thumb {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.primary {
+  background: #e62117;
+}
+
+.mp4-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mp4-row select {
+  flex: 1;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}

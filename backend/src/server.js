@@ -26,6 +26,7 @@ app.post("/api/info", async (req, res) => {
       noWarnings: true,
       noCheckCertificates: true,
       preferFreeFormats: true,
+      jsRuntimes: "deno",
     });
 
     const formats = (info.formats || [])
@@ -66,11 +67,12 @@ app.get("/api/download", async (req, res) => {
 
     const args =
       mode === "mp3"
-        ? { extractAudio: true, audioFormat: "mp3", audioQuality: 0, output: "-" }
+        ? { extractAudio: true, audioFormat: "mp3", audioQuality: 0, output: "-", jsRuntimes: "deno" }
         : {
             format: formatId ? `${formatId}+bestaudio/best` : "bestvideo+bestaudio/best",
             mergeOutputFormat: "mp4",
             output: "-",
+            jsRuntimes: "deno",
           };
 
     const subprocess = ytdlp.exec(url, args);

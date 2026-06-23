@@ -9,11 +9,21 @@ function formatSize(bytes) {
   return mb >= 1024 ? `${(mb / 1024).toFixed(1)} GB` : `${mb.toFixed(1)} MB`;
 }
 
+function formatDuration(seconds) {
+  if (!seconds) return "";
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60)
+    .toString()
+    .padStart(2, "0");
+  return `${m}:${s}`;
+}
+
 function App() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [video, setVideo] = useState(null);
+  const [mode, setMode] = useState("mp4");
   const [selectedFormat, setSelectedFormat] = useState("");
 
   async function handleFetchInfo(e) {
@@ -43,7 +53,7 @@ function App() {
     }
   }
 
-  function handleDownload(mode) {
+  function handleDownload() {
     const params = new URLSearchParams({ url, mode });
     if (mode === "mp4" && selectedFormat) params.set("formatId", selectedFormat);
     window.location.href = `${API_BASE}/api/download?${params.toString()}`;
@@ -51,35 +61,60 @@ function App() {
 
   return (
     <div className="page">
-      <h1>YouTube Downloader</h1>
-      <p className="subtitle">Download videos as MP3 or MP4 in your chosen quality.</p>
+      <div className="glow" />
+
+      <header className="hero">
+        <span className="badge">Free · No watermark · No signup</span>
+        <h1>
+          YouTube <span className="accent">Downloader</span>
+        </h1>
+        <p className="subtitle">Paste a link, pick a format and quality, get your file.</p>
+      </header>
 
       <form onSubmit={handleFetchInfo} className="url-form">
         <input
           type="url"
           required
-          placeholder="Paste a YouTube video URL..."
+          placeholder="https://www.youtube.com/watch?v=..."
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
         <button type="submit" disabled={loading}>
-          {loading ? "Loading..." : "Fetch"}
+          {loading ? <span className="spinner" /> : "Fetch"}
         </button>
       </form>
 
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error">⚠ {error}</p>}
 
       {video && (
-        <div className="result">
-          <img src={video.thumbnail} alt="" className="thumb" />
-          <h2>{video.title}</h2>
+        <div className="card">
+          <div className="card-top">
+            <img src={video.thumbnail} alt="" className="thumb" />
+            <div className="meta">
+              <h2>{video.title}</h2>
+              {video.duration && <span className="duration">{formatDuration(video.duration)}</span>}
+            </div>
+          </div>
 
-          <div className="actions">
-            <button className="primary" onClick={() => handleDownload("mp3")}>
-              Download MP3
+          <div className="tabs">
+            <button
+              type="button"
+              className={mode === "mp4" ? "tab active" : "tab"}
+              onClick={() => setMode("mp4")}
+            >
+              Video (MP4)
             </button>
+            <button
+              type="button"
+              className={mode === "mp3" ? "tab active" : "tab"}
+              onClick={() => setMode("mp3")}
+            >
+              Audio (MP3)
+            </button>
+          </div>
 
-            <div className="mp4-row">
+          <div className="panel">
+            {mode === "mp4" && (
               <select value={selectedFormat} onChange={(e) => setSelectedFormat(e.target.value)}>
                 {video.videoFormats.map((f) => (
                   <option key={f.format_id} value={f.format_id}>
@@ -87,13 +122,19 @@ function App() {
                   </option>
                 ))}
               </select>
-              <button className="primary" onClick={() => handleDownload("mp4")}>
-                Download MP4
-              </button>
-            </div>
+            )}
+            {mode === "mp3" && <p className="hint">Best available audio quality, converted to MP3.</p>}
+
+            <button className="download" onClick={handleDownload}>
+              Download {mode.toUpperCase()}
+            </button>
           </div>
         </div>
       )}
+
+      <footer>
+        Powered by <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noreferrer">yt-dlp</a>
+      </footer>
     </div>
   );
 }
